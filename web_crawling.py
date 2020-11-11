@@ -1,29 +1,43 @@
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
+### if recursive == True -> find son of this tag, default = true
+### if recursive == False -> find only top of this tag
+
 def findTags(url):
 
 	bs = urlopen(url)
 	bsObject = BeautifulSoup(bs, "html5lib")
 
 	### findAll(tag, attributes, recursive, text, limit, keywords) ###
-	### if recursive == True -> find son of this tag, default = true
-	### if recursive == False -> find only top of this tag
-
+	green = []
 	nameSpan = bsObject.findAll('span', {'class' : 'green'}) #findAll(tageName, tagAttribute)
-	#nameList = bsObject.findAll('span')
-	#nameList = bsObject.findAll('span', {'class' : 'green','red'}) #findAll(tageName, tagAttribute)
-	nameList = bsObject.findAll(text = "the prince")
-	print(len(nameList))
-
 	for name in nameSpan:
-		a = name.get_text()
+		green.append(name.get_text())
 
-	return a
-
-answer = findTags("http://www.pythonscraping.com/pages/warandpeace.html")
+	return green
 
 
-def codeForTree(url):
+def findLenOfTags(url):
+	bs = urlopen(url)
+	bsObject = BeautifulSoup(bs, "html5lib")
+
+	nameList = bsObject.findAll(text = "the prince")
+
+	return len(nameList)
+
+
+def main():
+	tag_ = findTags("http://www.pythonscraping.com/pages/warandpeace.html")
+	lentag_ = findLenOfTags("http://www.pythonscraping.com/pages/warandpeace.html")
+
+	print(tag_)
+	print(lentag_)
+a = main()
+
+
+
 #bs.tag.subTag.anotherSubTag
-	
+#son of table = th, td, img, span, tr // just use .children 
+
+
