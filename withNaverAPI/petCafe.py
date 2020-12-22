@@ -21,13 +21,11 @@ class PetCafe:
 
 
 	def results(self):
-		list =[]
+		listt =[]
 		#items include title, origin, allink, description, pubDate
 		for num in range(0,10):
-			
-			list = list + self.callSite(num * 110 + 1)['items']
-
-		self.finalList = self.finalList + list
+			listt = listt + self.callSite(num * 110 + 1)['items']
+		self.finalList = self.finalList + listt
 
 		return self.finalList
 
