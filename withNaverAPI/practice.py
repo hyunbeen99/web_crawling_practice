@@ -20,8 +20,8 @@ import json
 listt = []
 result = results('남성코트')
 listt = listt+result
-file = open('coat.json','w+')
+file = open('pet.json','w+')
 file.write(json.dumps(listt))
 import pandas as pd
-df = pd.read_json('coat.json')
-df.to_csv('crawling_naver_coat.csv',encoding='utf-8-sig',index=False)
+df = pd.read_json('pet.json')
+df.to_csv('crawling_naver_pet_cafe.csv',encoding='utf-8-sig',index=False)
