@@ -1,5 +1,5 @@
-import requests
 import re
+import requests
 import json
 import pandas as pd
 from urllib.parse import quote
