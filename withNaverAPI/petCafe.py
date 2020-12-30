@@ -7,10 +7,10 @@ import urllib
 
 
 class PetCafe:
-	def __init__(self):
+	def __init__(self, title):
 		self.client_id = "QO2NsVbYBhctOoGzV3nX"
 		self.client_secret = "FNKzHJOzAa"
-		self.encText = quote("반려동물 출입 가능 카페")
+		self.encText = quote(title)
 #		self.jsonlist =[]
 		self.finalList = []
 
@@ -28,18 +28,19 @@ class PetCafe:
 		#items include title, origin, allink, description, pubDate
 		for num in range(0,10):
 			listt = listt + self.callSite(num + 1)['items']
-			listt = self.removeHTML(listt)
-		self.finalList = self.finalList + listt
+
+		for i in listt:
+			dictt = self.removeHTML(dict(i))
+			self.finalList.append(dictt)
 
 		return self.finalList
 	
 
 	def removeHTML(self, text):
-		answer = []
-		for i in text:
-			answer.append(re.sub('<[^<]+?>', '', str(i)))
+		for key, value in text.items():
+			text[key] = re.sub('<[^<]+?>', '', text[key])
 
-		return answer
+		return text
 
 	def fileCreate(self):
 		# w+ : read/write , override
@@ -49,7 +50,7 @@ class PetCafe:
 		df.to_csv('crawling_naver_pet_cafe.csv', encoding='utf-8-sig', index=False)
 
 if __name__ == "__main__":
-	pet = PetCafe()
+	pet = PetCafe("24시 동물병원")
 	pet.results()
 	pet.fileCreate()
 
