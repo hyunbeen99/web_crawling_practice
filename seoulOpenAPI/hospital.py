@@ -1,46 +1,68 @@
 import urllib 
-from urllib.request import HTTPError
 import json 
 import pandas as pd 
-from urllib.parse import quote
 import requests
-import urllib.request
+import glob
+import os
 
 class PetHospital:
-	def __init__(self):
-		self.parse = []
+	def __init__(self, number, initial):
+		self.number = number
+		self.initial = initial
+		self.area = number+initial
 
 	def callSite(self):
 		key = "41547a577374697236345969436661"
-		url = "http://openapi.seoul.go.kr:8088/"+key+"/json/LOCALDATA_020301_GN/1/1000"
+		url = "http://openapi.seoul.go.kr:8088/"+key+"/json/"+self.area+"/1/1000"
 		result = requests.get(url)
-		print(result)
+		if (result): print("!!!!!!!!!!!!!!!!!" + self.initial + "!!!!!!!!!!!!!!!!!")
 		return result.json()
 			
 
 	def results(self):
-		jsonArray = []
-		list_total_count = self.callSite()['LOCALDATA_020301_GN']['list_total_count']
-		print(list_total_count)
+		list_total_count = self.callSite()[self.area]['list_total_count']
+	#	list_total_count = 2
+		parse = []
 		for num in range(0,list_total_count):
-			jsonArray = self.callSite()["LOCALDATA_020301_GN"]['row'][num]['BPLCNM']
+			jsonArray = []
+	
+			jsonName = self.callSite()[self.area]['row'][num]['BPLCNM']
+			jsonArray.append(jsonName)
+			jsonAddress = self.callSite()[self.area]['row'][num]['RDNWHLADDR']
+			jsonArray.append(jsonAddress)
 
-			self.parse.append(jsonArray)
-		return self.parse
+			parse.append(jsonArray)
+			
+		return parse
 
 
 	def fileCreate(self):	
-		print(self.parse)
-		df = pd.DataFrame(self.parse, columns=['name'])
-		df.to_csv('강남구병원.csv', index=False, encoding='utf-8-sig')
+		df = pd.DataFrame(self.results(), columns=['NAME', 'ADDRESS'])
+		df.columns = pd.MultiIndex.from_tuples(zip(['*', self.initial], df.columns))
+		df.to_csv('S_'+self.initial+'병원.csv', index=False, encoding='utf-8-sig')
 
-		'''file = open('pethospital.json', 'w+')
-		file.write(json.dumps(self.parse))
-		df = pd.read_json('pethospital.json')
-		df.to_csv('강남구병원.csv', encoding='utf-8-sig', index=False)'''
 
+	def addAllCSV(self):
+		input_file = '/home/hyunbeen/venv/web_crawling_practice/seoulOpenAPI' 
+		output_file = '/home/hyunbeen/venv/web_crawling_practice/seoulOpenAPI/seoulHospital.csv' 
+
+		allFile_list = glob.glob(os.path.join(input_file, 'S_*')) 
+		allData = [] 
+
+		for file in allFile_list:
+		    df = pd.read_csv(file, index_col=None)
+		    allData.append(df) 
+
+		#axis 1 : vertical axis 0 : horizontal
+		dataCombine = pd.concat(allData, axis=1, ignore_index=False)
+		dataCombine.to_csv(output_file, index=False) 
+		
 if __name__ == "__main__":
-	ph = PetHospital()
-	ph.results()
-	ph.fileCreate()
+	seoul = ['GN', 'GB', 'GD', 'GS', 'GA', 'GJ', 'GR', 'GC', 'NW', 'DB', 'DD', 'DJ', 'MP', 'SM', 'SC', 'SD', 'SB', 'SP', 'YC', 'YD', 'YS', 'EP', 'JN', 'JG', 'JR']
+	for initial in seoul:
+		ph = PetHospital('LOCALDATA_020301_',initial)
+		ph.fileCreate()
+		print("###############################FINISH##############################")
+
+#	ph.addAllCSV()
 
