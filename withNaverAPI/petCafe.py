@@ -47,10 +47,10 @@ class PetCafe:
 		file = open('petcafe.json', 'w+')
 		file.write(json.dumps(self.finalList))
 		df = pd.read_json('petcafe.json')
-		df.to_csv('crawling_naver_pet_cafe.csv', encoding='utf-8-sig', index=False)
+		df.to_csv('성북구병원.csv', encoding='utf-8-sig', index=False)
 
 if __name__ == "__main__":
-	pet = PetCafe("24시 동물병원")
+	pet = PetCafe("성북구 동물병원")
 	pet.results()
 	pet.fileCreate()
 

@@ -1,43 +1,46 @@
 import urllib 
+from urllib.request import HTTPError
 import json 
 import pandas as pd 
 from urllib.parse import quote
 import requests
 import urllib.request
 
+class PetHospital:
+	def __init__(self):
+		self.parse = []
 
-def callSite(start, end):
-	key = "41547a577374697236345969436661"
-	url = "http://openapi.seoul.go.kr:8088/"+key+"/json/LOCALDATA_020301_GN/"+str(start)+"/"+str(end)	
-	result = requests.get(url)
-	print(result)
-	return result.json()
-		
+	def callSite(self):
+		key = "41547a577374697236345969436661"
+		url = "http://openapi.seoul.go.kr:8088/"+key+"/json/LOCALDATA_020301_GN/1/1000"
+		result = requests.get(url)
+		print(result)
+		return result.json()
+			
 
-def result():
-	listt = []
-	'''parse = []
-	jsonArray = []
-	js = callSite(1,10)
-#	jsonObject = str(js)
-	jsonArray = js.get('row')
-	for idx in jsonArray:
-		print(idx)
-		parse.append(idx.get("BPLCNM"))'''
-	for num in range(1,10):
-		listt = callSite(1,10).get('row')
-	
-	return listt
+	def results(self):
+		jsonArray = []
+		list_total_count = self.callSite()['LOCALDATA_020301_GN']['list_total_count']
+		print(list_total_count)
+		for num in range(0,list_total_count):
+			jsonArray = self.callSite()["LOCALDATA_020301_GN"]['row'][num]['BPLCNM']
+
+			self.parse.append(jsonArray)
+		return self.parse
 
 
-def fileCreate():	
-	file = open('pr_hospital.json', 'w+')
-	file.write(json.dumps(result()))
-	df = pd.read_json('pr_hospital.json')
-	df.to_csv('강남구병원.csv', encoding='utf-8-sig', index=False)
+	def fileCreate(self):	
+		print(self.parse)
+		df = pd.DataFrame(self.parse, columns=['name'])
+		df.to_csv('강남구병원.csv', index=False, encoding='utf-8-sig')
 
+		'''file = open('pethospital.json', 'w+')
+		file.write(json.dumps(self.parse))
+		df = pd.read_json('pethospital.json')
+		df.to_csv('강남구병원.csv', encoding='utf-8-sig', index=False)'''
 
 if __name__ == "__main__":
-	result()
-	fileCreate()
+	ph = PetHospital()
+	ph.results()
+	ph.fileCreate()
 
