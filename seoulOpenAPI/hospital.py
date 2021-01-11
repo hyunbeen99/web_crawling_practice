@@ -61,8 +61,8 @@ if __name__ == "__main__":
 	seoul = ['GN', 'GB', 'GD', 'GS', 'GA', 'GJ', 'GR', 'GC', 'NW', 'DB', 'DD', 'DJ', 'MP', 'SM', 'SC', 'SD', 'SB', 'SP', 'YC', 'YD', 'YS', 'EP', 'JN', 'JG', 'JR']
 	for initial in seoul:
 		ph = PetHospital('LOCALDATA_020301_',initial)
-		ph.fileCreate()
-		print("###############################FINISH##############################")
+#		ph.fileCreate()
+#		print("###############################FINISH##############################")
 
-#	ph.addAllCSV()
+	ph.addAllCSV()
 
