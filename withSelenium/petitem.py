@@ -18,15 +18,15 @@ class PetItem:
 		driver = webdriver.Chrome(executable_path='/home/hyunbeen/chromedriver', chrome_options=options)
 		driver.get(self.url)
 
-		return self.driver
+		return driver
 
 
 	def titleCrawling(self):
 		result = []
 
-		for name in range(1,75):
+		for idx in range(1,75):
 			array = []
-			kind = self.openPage().find_element_by_xpath('//*[@id="ct"]/div[2]/ul/li[%d]/div[1]/a/div/em' %name).text
+			kind = self.openPage().find_element_by_xpath('//*[@id="ct"]/div[2]/ul/li[%d]/div[1]/a/div/em' %idx).text
 			if(kind == "애견용품"):
 				try:
 					html = self.openPage().find_element_by_css_selector('#ct > div.search_listview._content._ctList > ul > li:nth-child(%d) > div.item_info > a > div > strong' %idx)
@@ -36,8 +36,7 @@ class PetItem:
 					print('ok')
 					print()
 					result.append(array)
-				
-					
+									
 				except IndexError:
 					print("Index out of range")
 					pass	
